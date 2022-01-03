@@ -30,6 +30,9 @@ struct arg_struct {
 arg_struct taskQueue[26];
 int taskCount = 0;
 vector<Result> results;
+int numberOfThreads;
+int numberOfAbstracts;
+int numberOfBests;
 
 pthread_mutex_t mutexQueue;
 pthread_cond_t condQueue;
@@ -52,7 +55,7 @@ double measure(vector<string> uniqueWordsToSearch, vector<string> uniqueWordsInF
 }
 
 void executeTask(arg_struct* task){
-
+	usleep(5000);
 	string abstractName = "/home/cmpe250student/Desktop/project2/abstracts/" + task->abstractName;
 	vector<string> uniqueWordsToSearch = task->uniqueWordsToSearch;
 
@@ -148,14 +151,14 @@ int main(int argc, char *argv[]){
 	infile.open(argv[1], std::ifstream::in);
 
 	// get the information from the input file.
-	int numberOfThreads;
-	int numberOfAbstracts;
-	int numberOfBests;
 	vector<string> wordsToSearch;
 	vector<string> abstracts;
 
 	infile >> numberOfThreads >> numberOfAbstracts >> numberOfBests;
 
+	if(numberOfAbstracts < numberOfThreads) {
+		numberOfThreads = numberOfAbstracts;
+	}
 	// get the words to search
 	string words;
 	std::getline(infile, words);
@@ -219,7 +222,7 @@ int main(int argc, char *argv[]){
     	cout << "File: " << threadResult.fileName << endl;
     	cout << std::setprecision(4) << std::fixed;
     	cout << "Score: " << threadResult.score << endl;
-    	//cout << "Summary: " << threadResult.summary << endl;
+    	cout << "Summary: " << threadResult.summary << endl;
     	cout << "###" << endl;
     }
     return 0;
